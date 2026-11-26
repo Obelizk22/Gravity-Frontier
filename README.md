@@ -1,4 +1,4 @@
-# Gravity Frontier v25 — Online Multiplayer Foundation
+# Gravity Frontier v26 — Online Multiplayer Foundation
 
 v25 changes multiplayer from same-Wi-Fi native hosting to **internet rooms using Supabase Realtime**. The game remains a static HTML/CSS/JavaScript app and can be installed on iPhone as a Home Screen web app (PWA). No App Store submission or Apple Developer Program membership is required to play it as a web app.
 
@@ -56,3 +56,12 @@ Supabase Free projects may pause after one week of inactivity. A paused project 
 ## Local testing
 
 Serve the folder from an HTTPS static host (or localhost for development), open `index.html`, configure Supabase, then use two browser/device sessions. For real iPhone testing, publish over HTTPS first.
+
+
+## v26 AI Training Lab
+
+- Two independent tabular Q-learning agents compete in self-play.
+- Six maps are selected randomly between rounds.
+- Adjustable simulation speed, pause/resume, run-one-round, win-rate/history display, and reset learning.
+- Q-tables and statistics persist in this browser's local storage; they do not sync across devices.
+- The training simulator is separate from the normal match engine and does not train on campaign or multiplayer matches.
