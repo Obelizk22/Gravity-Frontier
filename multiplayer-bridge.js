@@ -1,0 +1,44 @@
+/* Gravity Frontier v25 cloud bridge.
+   Supabase Realtime carries ephemeral room messages and presence. The host browser
+   remains authoritative for simulation; no service-role key is ever used here. */
+(()=>{
+  const STORE='gf_cloud_config_v1';
+  let client=null,channel=null,role=null,roomCode=null,playerId=null,displayName='Player';
+  let hostPresenceIds=new Set(),lastPresenceIds=new Set(),sendQueue=Promise.resolve(),lastSendAt=0;
+  const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const api={onMessage:null};
+  const emit=e=>{try{api.onMessage?.(e)}catch(err){console.error('Gravity Frontier cloud event handler:',err)}};
+  const randomCode=()=>{let s='';for(let i=0;i<8;i++)s+=alphabet[Math.floor(Math.random()*alphabet.length)];return 'GF-'+s};
+  function readConfig(){try{return JSON.parse(localStorage.getItem(STORE)||'{}')}catch{return {}}}
+  function makeClient(url,key){if(!window.supabase?.createClient)throw new Error('Supabase client library did not load. Check your internet connection and reload the game.');return window.supabase.createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:20}}})}
+  function getClient(){if(client)return client;const c=readConfig();if(!c.url||!c.key)throw new Error('Cloud backend is not configured yet. Open Set up free cloud backend first.');client=makeClient(c.url,c.key);return client}
+  function send(payload){if(!channel) return Promise.reject(new Error('You are not connected to an online room.'));const data=JSON.stringify(payload);if(data.length>250000)return Promise.reject(new Error('This update is too large for the free cloud room.'));sendQueue=sendQueue.catch(()=>{}).then(async()=>{const now=Date.now(),wait=Math.max(0,90-(now-lastSendAt));if(wait)await new Promise(r=>setTimeout(r,wait));lastSendAt=Date.now();const result=await channel.send({type:'broadcast',event:'gf',payload});if(result==='error'||result==='timed out')throw new Error('Cloud message could not be delivered ('+result+').');return result});return sendQueue}
+  function roomChannel(code,key){return getClient().channel('gf-room-'+code.replace(/[^A-Z0-9]/g,''),{config:{broadcast:{self:false,ack:true},presence:{key}}})}
+  function subscribe(ch){return new Promise((resolve,reject)=>{let settled=false,everConnected=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Cloud room connection timed out.'))}},12000);ch.subscribe(status=>{if(status==='SUBSCRIBED'){if(!settled){settled=true;everConnected=true;clearTimeout(timer);resolve()}else if(everConnected&&role==='client'){emit({type:'resumed',playerId});}}else if((status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED')){if(!settled){settled=true;clearTimeout(timer);reject(new Error('Supabase Realtime connection failed: '+status))}else if(role==='client'){emit({type:'reconnecting'});}}})})}
+  function hostPresenceChanged(){if(role!=='host'||!channel)return;const state=channel.presenceState(),players=[];for(const [key,metas] of Object.entries(state)){for(const meta of metas||[]){if(meta.host)continue;const id=String(meta.playerId||key);players.push({id,name:String(meta.displayName||'Player').slice(0,20),connected:true})}}const nowIds=new Set(players.map(p=>p.id));for(const id of lastPresenceIds)if(!nowIds.has(id))emit({type:'playerDisconnected',playerId:id,displayName:'A player'});for(const id of nowIds)if(!lastPresenceIds.has(id))emit({type:'playerJoined',playerId:id,displayName:players.find(p=>p.id===id)?.name||'A player'});lastPresenceIds=nowIds;emit({type:'players',players})}
+  function attachHost(ch){ch.on('broadcast',{event:'gf'},({payload})=>{if(!payload||typeof payload!=='object')return;if(payload.type==='clientMessage'){const m=payload.message||{};emit({...m,type:'clientMessage',playerId:String(payload.playerId||''),messageType:String(m.type||'')})}});ch.on('presence',{event:'sync'},hostPresenceChanged)}
+  function attachClient(ch){let hasSeenHost=false,hostLost=false;ch.on('presence',{event:'sync'},()=>{const present=Object.values(ch.presenceState()).flat().some(meta=>meta.host===true);if(present){hasSeenHost=true;hostLost=false}else if(hasSeenHost&&!hostLost){hostLost=true;emit({type:'clientDisconnected'})}});ch.on('broadcast',{event:'gf'},({payload})=>{if(!payload||typeof payload!=='object')return;if(payload.targetPlayerId&&payload.targetPlayerId!==playerId)return;if(payload.type==='clientMessage')return;if(payload.type==='hostClosed'){if(!hostLost){hostLost=true;emit({type:'clientDisconnected'})}return}if(payload.type==='playerKicked'){emit(payload);disconnectRoom().catch(()=>{});return}emit(payload)})}
+  async function configure(url,key){url=String(url||'').trim().replace(/\/$/,'');key=String(key||'').trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url))throw new Error('Enter your Supabase Project URL (https://your-project.supabase.co).');if(!key||key.length<20)throw new Error('Enter the Supabase publishable key or legacy anon public key. Never use a service-role secret.');const test=makeClient(url,key);const ch=test.channel('gf-config-test-'+Math.random().toString(36).slice(2,8));try{await subscribe(ch);await test.removeChannel(ch)}catch(e){try{await test.removeChannel(ch)}catch{}throw new Error('Could not connect to Supabase. Check the URL, public key, and that Realtime is enabled. '+e.message)}try{localStorage.setItem(STORE,JSON.stringify({url,key}))}catch{throw new Error('This browser could not save the settings. Check Safari website storage settings.')}client=test;return true}
+  async function startHosting(options={}){if(channel)await stopHosting();const code=randomCode();role='host';roomCode=code;playerId='host';displayName=String(options.displayName||'Host').slice(0,20);const ch=roomChannel(code,'host');channel=ch;attachHost(ch);try{await subscribe(ch);await ch.track({playerId:'host',displayName,host:true,connected:true});emit({type:'hostReady',roomCode:code});return {roomCode:code,status:'Supabase cloud room active'}}catch(e){channel=null;role=null;try{await getClient().removeChannel(ch)}catch{}throw e}}
+  async function stopHosting(){if(!channel||role!=='host')return;const ch=channel;try{await send({type:'hostClosed'})}catch{}channel=null;role=null;roomCode=null;lastPresenceIds.clear();await getClient().removeChannel(ch)}
+  async function joinRoom(code,name){code=String(code||'').trim().toUpperCase().replace(/\s/g,'');if(!/^GF-[A-HJ-NP-Z2-9]{8}$/.test(code))throw new Error('Room codes look like GF-ABCDEFG2. Check the code with your host.');if(channel)await disconnectRoom();role='client';roomCode=code;playerId='p_'+Math.random().toString(36).slice(2,10)+'_'+Date.now().toString(36);displayName=String(name||'Player').slice(0,20);const ch=roomChannel(code,playerId);channel=ch;attachClient(ch);try{await subscribe(ch);await ch.track({playerId,displayName,host:false,connected:true});await new Promise(r=>setTimeout(r,900));const state=ch.presenceState();const hostPresent=Object.values(state).flat().some(meta=>meta.host===true);if(!hostPresent)throw new Error('No active host was found for that room code. Check the code or ask your friend to host again.');emit({type:'joined',roomCode:code,playerId});return {roomCode:code,playerId}}catch(e){channel=null;role=null;try{await getClient().removeChannel(ch)}catch{}throw e}}
+  async function disconnectRoom(){if(!channel||role!=='client')return;const ch=channel;channel=null;role=null;roomCode=null;playerId=null;try{await ch.untrack()}catch{}await getClient().removeChannel(ch)}
+  api.isAvailable=()=>!!(window.supabase?.createClient&&readConfig().url&&readConfig().key);
+  api.isConfigured=api.isAvailable;
+  api.getConfig=()=>{const c=readConfig();return {url:c.url||'',key:c.key||''}};
+  api.configure=configure;
+  api.startHosting=startHosting;
+  api.stopHosting=stopHosting;
+  api.kickPlayer=async id=>{if(role!=='host')throw new Error('Only the host can remove players.');await send({type:'playerKicked',targetPlayerId:String(id),reason:'The host removed you from the lobby.'});return true};
+  api.sendToHost=async message=>{if(role!=='host')throw new Error('Only the host can broadcast game updates.');return send(message)};
+  api.sendToPlayer=async(id,message)=>{if(role!=='host')throw new Error('Only the host can send player-specific messages.');return send({...message,targetPlayerId:String(id)})};
+  api.startBrowsing=async()=>({online:true,method:'room-code'});
+  api.stopBrowsing=async()=>true;
+  api.joinRoom=joinRoom;
+  api.disconnectRoom=disconnectRoom;
+  api.sendToRoom=async message=>{if(role!=='client')throw new Error('Only joined players can send room commands.');return send({type:'clientMessage',playerId,message})};
+  api.receive=emit;
+  api.getRoomInfo=()=>({role,roomCode,playerId});
+  api.refreshPlayers=()=>{hostPresenceChanged();return true};
+  window.GravityFrontierNative=api;
+})();
