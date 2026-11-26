@@ -245,7 +245,7 @@ $('testMap').onclick=()=>{mode='custom';fleets=[];paused=false;pendingVictory=nu
 addEventListener('wheel',e=>{zoom(e.deltaY<0?1.1:.9,e.clientX,e.clientY)},{passive:true});
 addEventListener('resize',resize);resize();initMenu();function loop(t){let dt=Math.min((t-last)/1000||0,.05);last=t;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
 try{const old=localStorage.getItem('gf_custom_map');if(old&&!getMaps().length){const oldPlanets=JSON.parse(old);if(Array.isArray(oldPlanets))saveMaps([{id:'legacy_map',name:'My Saved Map',planets:oldPlanets,updatedAt:Date.now()}]);}}catch{}
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=30',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
 // v24: ordered state application, payload validation, and smooth client-side entity interpolation.
 // Retains v22 cooperative commands and v21 diagnostics.
 function gfSerializeSnapshot(){
@@ -363,4 +363,4 @@ window.GravityFrontier={
 };
 if(!window.__gfV23NetworkTimers){window.__gfV23NetworkTimers=true;setInterval(()=>{window.GravityFrontier?.broadcastSnapshot?.()},200);setInterval(()=>{gfUpdateNetworkStatus();if(mode==='multiplayer'&&multiplayerRole==='client'&&window.GravityFrontierNative?.isAvailable?.()&&Date.now()-gfLastHeartbeat>2000){gfLastHeartbeat=Date.now();window.GravityFrontierNative.sendToRoom({type:'heartbeat',clientTime:gfLastHeartbeat}).catch(()=>{})}},500)}
 })();
-</script><script src="ai-training-lab.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
+</script><script src="ai-training-lab.js?v=30"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
