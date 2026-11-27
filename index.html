@@ -79,7 +79,7 @@ function campaignMap(level){
  for(let i=0;i<level-1;i++){const side=i%2?1:-1; a.push(mk(800+side*(180+Math.floor(i/2)*65),330+(i%3)*220,22+level, 'neutral',12+level*3,.7+level*.08,false));}
  // New campaign chapter: Green joins in mission 7; Purple joins in mission 9.
  if(level>=7){a.push(mk(800,145,44,'green',34+(level-7)*9,1.35+(level-7)*.10,true));a.push(mk(610,300,27,'neutral',18+level*2,.85+level*.035,false));a.push(mk(990,300,27,'neutral',18+level*2,.85+level*.035,false));}
- if(level>=9){a.push(mk(800,1455,46,'purple',36+(level-9)*10,1.4+(level-9)*.12,true));a.push(mk(610,1300,29,'neutral',20+level*2,.9+level*.04,false));a.push(mk(990,1300,29,'neutral',20+level*2,.9+level*.04,false));}
+ if(level>=9){a.push(mk(800,1250,46,'purple',36+(level-9)*10,1.4+(level-9)*.12,true));a.push(mk(610,1300,29,'neutral',20+level*2,.9+level*.04,false));a.push(mk(990,1300,29,'neutral',20+level*2,.9+level*.04,false));}
  if(level>=10)a.filter(p=>p.owner==='green'||p.owner==='purple').forEach(p=>{p.n+=Math.floor((level-9)*7);p.prod+=(level-9)*.08});
  return a;
 }
