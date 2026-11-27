@@ -157,7 +157,7 @@ function renderVictoryCelebration(){
  victoryCelebration.bursts.forEach(b=>{const age=elapsed-b.delay;if(age<0||age>b.life)return;const t=age/1000,fade=Math.max(0,1-age/b.life),x=b.x+b.vx*t,y=b.y+b.vy*t+38*t*t,tailX=x-b.vx*.045,tailY=y-(b.vy+76*t)*.045;
  ctx.globalAlpha=fade;ctx.strokeStyle=b.color;ctx.lineWidth=2.4/cam.z;ctx.shadowColor=b.color;ctx.shadowBlur=15;ctx.beginPath();ctx.moveTo(tailX,tailY);ctx.lineTo(x,y);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,(b.size+1.5)/cam.z,0,Math.PI*2);ctx.fill();});
  ctx.restore();
- if(elapsed>=3900){const msg=victoryCelebration.message;victoryCelebration=null;showEndGame(true,msg);}
+ if(elapsed>=6000){const msg=victoryCelebration.message;victoryCelebration=null;showEndGame(true,msg);}
 }
 function endGame(win,message=''){
  if(win&&!victoryCelebration&&!gameResult){startVictoryCelebration(message);return;}
