@@ -11,6 +11,89 @@
 #toast{position:fixed;z-index:8;top:78px;left:50%;transform:translateX(-50%);background:#172c49;border:1px solid #50749d;border-radius:10px;padding:8px 12px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none}
 #overlay{position:fixed;z-index:6;inset:0;background:#050a15e8;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}.dialog{width:min(480px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#142541,#091326);border:1px solid #385477;border-radius:20px;padding:22px;box-shadow:0 20px 80px #000a}.dialog h1{font-size:28px;line-height:1;margin:0 0 10px}.dialog p{font-size:13px;color:#b9cbe2;line-height:1.5}.primary{width:100%;padding:12px;border:0;border-radius:11px;background:linear-gradient(120deg,#28b8ed,#3978ff);color:white;font-weight:900;margin-top:8px}.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.menuCard{background:#10203a;border:1px solid #355071;border-radius:13px;padding:13px;text-align:left;color:#eaf5ff}.menuCard b{display:block;font-size:14px}.menuCard span{font-size:11px;color:#aabed9}.row{display:flex;gap:8px;align-items:center;margin:8px 0}.row label{font-size:12px;color:#c5d5e9;flex:1}.row input{width:80px}.editorPanel{position:fixed;z-index:4;left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom,0px) + 48px);display:none;gap:6px;flex-wrap:wrap;justify-content:center}.editorPanel.show{display:flex}.editorPanel .panel{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:100%}.editorPanel label{display:flex;align-items:center;gap:4px;color:#c5d5e9;font-size:10px}.editorPanel input{width:62px;padding:7px 5px}.editorPanel select{padding:7px 5px;max-width:112px}
 @media(min-width:700px){.hud{top:14px;left:14px;right:14px}.brand{font-size:14px}.stats{font-size:12px}.btn,select{font-size:12px;padding:9px 11px}#hint{font-size:12px}.editorPanel{bottom:52px}}
+
+/* v41 · unified interface refresh */
+:root{color-scheme:dark;--ui-bg:#091426;--ui-panel:rgba(12,25,45,.94);--ui-panel-2:#10213a;--ui-line:rgba(123,166,214,.22);--ui-line-strong:rgba(111,190,235,.42);--ui-text:#f1f7ff;--ui-muted:#a9bdd5;--ui-accent:#4bc8f5;--ui-shadow:0 16px 48px rgba(0,0,0,.34)}
+html,body{background:#07101f;color:var(--ui-text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,select,input{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .16s ease,border-color .16s ease,transform .16s ease,filter .16s ease}
+button:active{transform:translateY(1px) scale(.985)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #62d5ff;outline-offset:2px}
+.panel{background:var(--ui-panel);border:1px solid var(--ui-line);border-radius:15px;box-shadow:var(--ui-shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.hud{left:10px;right:10px;gap:8px;align-items:flex-start}
+.hud>.panel:first-child{min-width:0;max-width:min(58%,420px);padding:10px 12px}
+.hud .brand{font-size:11px;letter-spacing:.12em;color:#d8f4ff}
+.hud .stats{font-size:10px;line-height:1.35;color:#afc4dc}
+.hud .tools{gap:5px;padding:6px;align-items:center}
+.btn,select,input{background:#132642;color:#edf6ff;border:1px solid #365477;border-radius:10px;padding:9px 11px;font-size:12px;font-weight:750}
+.btn{min-height:36px}
+.btn:hover{background:#1b3557;border-color:#5b8ab7}
+.btn.active{background:#155477;border-color:#65d4ff;color:#fff;box-shadow:0 0 0 1px rgba(101,212,255,.12) inset}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.primary{min-height:44px;margin-top:10px;padding:12px 16px;border:1px solid rgba(130,221,255,.28);border-radius:12px;background:linear-gradient(115deg,#1689b9,#386ee7);box-shadow:0 8px 22px rgba(20,111,190,.18);color:white;font-size:13px;font-weight:850;letter-spacing:.015em}
+.primary:hover{filter:brightness(1.1)}
+#overlay{padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px));background:rgba(3,8,18,.78);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.dialog{width:min(540px,100%);max-height:min(88dvh,900px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,26px);border:1px solid rgba(121,177,224,.27);border-radius:22px;background:linear-gradient(155deg,rgba(20,39,67,.985),rgba(7,17,33,.985));box-shadow:0 28px 90px rgba(0,0,0,.58);scrollbar-width:thin;scrollbar-color:#365477 transparent}
+.dialog h1{font-size:clamp(23px,6vw,30px);line-height:1.06;letter-spacing:-.035em;margin:0 0 12px;color:#f3f9ff}
+.dialog p{font-size:13px;line-height:1.55;color:#b5c8df;margin:8px 0 14px}
+.menuGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 10px}
+.menuCard{min-width:0;min-height:76px;padding:14px 13px;border:1px solid rgba(112,158,202,.25);border-radius:15px;background:linear-gradient(145deg,rgba(20,42,70,.96),rgba(12,28,49,.96));box-shadow:0 5px 15px rgba(0,0,0,.12);color:#f0f7ff}
+.menuCard:hover{background:linear-gradient(145deg,#1a3c60,#112b49);border-color:var(--ui-line-strong)}
+.menuCard b{font-size:13px;line-height:1.25;letter-spacing:.01em}
+.menuCard span{display:block;margin-top:5px;font-size:10px;line-height:1.4;color:#a9bfd8}
+.row{gap:10px;margin:10px 0;padding:9px 0;border-bottom:1px solid rgba(119,157,197,.12);flex-wrap:wrap}
+.row label{font-size:12px;line-height:1.4;color:#c7d8eb}
+.row input{max-width:120px}
+#hint{top:calc(env(safe-area-inset-top,0px) + 76px);max-width:min(88vw,560px);padding:8px 13px;border:1px solid rgba(105,165,211,.22);border-radius:999px;background:rgba(9,22,40,.88);box-shadow:0 6px 22px rgba(0,0,0,.2);font-size:10px;line-height:1.35;color:#c3d8ed;backdrop-filter:blur(12px)}
+#toast{top:calc(env(safe-area-inset-top,0px) + 118px);max-width:calc(100% - 28px);padding:10px 15px;border:1px solid rgba(99,196,240,.4);border-radius:12px;background:rgba(16,43,69,.97);box-shadow:0 12px 32px rgba(0,0,0,.35);font-size:12px;font-weight:700;text-align:center}
+.fleetControls{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);max-width:calc(100% - 18px);gap:5px;padding:7px 8px;border:1px solid rgba(119,177,220,.28);border-radius:15px;background:rgba(8,20,37,.94);box-shadow:0 12px 34px rgba(0,0,0,.38);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+.fleetControls::-webkit-scrollbar{display:none}
+.fleetControls span{flex:0 0 auto;font-size:9px;letter-spacing:.08em;color:#a9c2dc}
+.fleetControls .btn{flex:0 0 auto;min-width:39px;min-height:34px;padding:7px 8px;font-size:10px}
+#wormholeBuildBtn{bottom:calc(env(safe-area-inset-bottom,0px) + 66px)!important;min-height:36px;padding:8px 14px;border-color:rgba(91,210,255,.42);border-radius:999px;background:rgba(12,48,72,.96);box-shadow:0 8px 24px rgba(0,0,0,.32);font-size:11px}
+.editorPanel{left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);max-height:38dvh;overflow-y:auto;overscroll-behavior:contain;align-items:flex-end;scrollbar-width:thin}
+.editorPanel .panel{width:100%;max-width:900px;max-height:38dvh;overflow-y:auto;gap:7px;padding:10px;border:1px solid rgba(116,174,219,.3);border-radius:16px;background:rgba(8,20,37,.96);box-shadow:0 14px 38px rgba(0,0,0,.4);backdrop-filter:blur(16px)}
+.editorPanel .btn{min-height:33px;padding:7px 9px;font-size:10px}
+.editorPanel label{font-size:10px;color:#b9cde3}
+.editorPanel input,.editorPanel select{min-height:31px;font-size:10px}
+#networkStatus{font-size:9px;letter-spacing:.025em}
+@media(max-width:520px){
+ .hud{left:7px;right:7px;gap:5px}
+ .hud>.panel:first-child{max-width:48%;padding:8px 9px}
+ .hud .brand{font-size:9px;letter-spacing:.08em}
+ .hud .stats{font-size:9px;max-width:38vw;overflow-wrap:anywhere}
+ .hud .tools{gap:3px;padding:5px}
+ .hud .tools .btn{min-width:32px;min-height:33px;padding:6px 8px;font-size:10px}
+ #hint{top:calc(env(safe-area-inset-top,0px) + 64px);max-width:calc(100% - 20px);font-size:9px;padding:7px 10px}
+ #toast{top:calc(env(safe-area-inset-top,0px) + 105px)}
+ .dialog{border-radius:19px;padding:18px 15px}
+ .dialog h1{font-size:24px}
+ .dialog p{font-size:12px}
+ .menuGrid{gap:8px;margin-top:12px}
+ .menuCard{min-height:70px;padding:11px 10px;border-radius:13px}
+ .menuCard b{font-size:12px}
+ .menuCard span{font-size:9px}
+ .primary{min-height:42px;padding:11px;font-size:12px}
+ .fleetControls{gap:4px;padding:6px;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+ .fleetControls span{font-size:8px;margin-right:0}
+ .fleetControls .btn{min-width:35px;min-height:32px;padding:6px;font-size:9px}
+ #wormholeBuildBtn{bottom:calc(env(safe-area-inset-bottom,0px) + 54px)!important}
+ .editorPanel{left:6px;right:6px;bottom:calc(env(safe-area-inset-bottom,0px) + 7px);max-height:42dvh}
+ .editorPanel .panel{max-height:42dvh;padding:8px;gap:5px}
+ .editorPanel .btn{font-size:9px;padding:6px 7px}
+}
+@media(min-width:700px){
+ .hud{top:14px;left:14px;right:14px}
+ .hud>.panel:first-child{max-width:420px}
+ .dialog{width:min(600px,100%)}
+ .menuGrid{gap:12px}
+ .menuCard{min-height:88px;padding:16px}
+ .menuCard b{font-size:14px}
+ .menuCard span{font-size:11px}
+ .fleetControls{bottom:18px}
+ .editorPanel{bottom:16px}
+}
+
 </style></head><body>
 <canvas id="game"></canvas>
 <div class="hud">
@@ -207,7 +290,7 @@ function draw(){if(mode==='multiplayer'&&multiplayerRole==='client')gfAdvanceInt
  // editor label
 }
 function hit(p){for(let i=planets.length-1;i>=0;i--)if(Math.hypot(planets[i].x-p.x,planets[i].y-p.y)<planets[i].r+14/cam.z)return planets[i];return null}
-function showMenu(){$('overlay').style.display='flex';$('wormholeBuildBtn').style.display='none';setWormholeBuildMode(false);$('editorPanel').classList.remove('show');$('dialog').innerHTML=`<h1>GRAVITY<br>FRONTIER</h1><p>Build fleets, connect worlds through command networks, and conquer the system.</p><div class="menuGrid"><button class="menuCard" id="aiLab" style="grid-column:1/-1;border-color:#35bce9;background:linear-gradient(110deg,#12334c,#18284a)"><b>🧠 AI TRAINING LAB</b><span>Watch two bots learn and battle on six maps · adjustable speed</span></button><button class="menuCard" id="campaign"><b>Campaign</b><span>12 missions · two new enemy factions and rising difficulty</span></button><button class="menuCard" id="quick"><b>Ready-made maps</b><span>Choose map size and battle with 2–4 teams</span></button><button class="menuCard" id="editor"><b>Map designer</b><span>Create and manage saved maps</span></button><button class="menuCard" id="custom"><b>Custom maps</b><span>Choose from your saved maps</span></button><button class="menuCard" id="multiplayer"><b>Multiplayer</b><span>Play with friends over the internet</span></button></div><p style="font-size:11px">Campaign unlocked: ${getCampaignProgress()} of 12 missions. Saved maps stay on this device. <b>Build v40</b></p>`;bindMenu()}
+function showMenu(){$('overlay').style.display='flex';$('wormholeBuildBtn').style.display='none';setWormholeBuildMode(false);$('editorPanel').classList.remove('show');$('dialog').innerHTML=`<h1>GRAVITY<br>FRONTIER</h1><p>Build fleets, connect worlds through command networks, and conquer the system.</p><div class="menuGrid"><button class="menuCard" id="aiLab" style="grid-column:1/-1;border-color:#35bce9;background:linear-gradient(110deg,#12334c,#18284a)"><b>🧠 AI TRAINING LAB</b><span>Watch two bots learn and battle on six maps · adjustable speed</span></button><button class="menuCard" id="campaign"><b>Campaign</b><span>12 missions · two new enemy factions and rising difficulty</span></button><button class="menuCard" id="quick"><b>Ready-made maps</b><span>Choose map size and battle with 2–4 teams</span></button><button class="menuCard" id="editor"><b>Map designer</b><span>Create and manage saved maps</span></button><button class="menuCard" id="custom"><b>Custom maps</b><span>Choose from your saved maps</span></button><button class="menuCard" id="multiplayer"><b>Multiplayer</b><span>Play with friends over the internet</span></button></div><p style="font-size:11px">Campaign unlocked: ${getCampaignProgress()} of 12 missions. Saved maps stay on this device. <b>Build v41</b></p>`;bindMenu()}
 function showCampaignMenu(){const unlocked=getCampaignProgress(),names=['First Contact','Contested Orbit','Redline','Siege Front','Deep Pressure','The Last Stand','Second Front','Triple Threat','Purple Rising','Four-Way Siege','Fading Hope','Final Convergence'];$('dialog').innerHTML=`<h1>CAMPAIGN · 12 MISSIONS</h1><p>Complete each mission to unlock the next. Missions 7–8 introduce Green; Missions 9–12 add Purple and escalating multi-front battles.</p><div class="menuGrid">${Array.from({length:12},(_,i)=>`<button class="menuCard" data-mission="${i+1}" ${i+1>unlocked?'disabled':''}><b>Mission ${i+1} ${i+1>unlocked?'🔒':''}</b><span>${names[i]}</span></button>`).join('')}</div><button class="primary" id="menuBack">Back</button>`;$('dialog').querySelectorAll('[data-mission]').forEach(b=>b.onclick=()=>{campaignLevel=Number(b.dataset.mission);setMode('campaign',{level:campaignLevel})});$('menuBack').onclick=showMenu}
 function showMapsMenu(){const maps=getMaps();$('dialog').innerHTML=`<h1>SAVED MAPS</h1><p>${maps.length?`You have ${maps.length} saved map${maps.length===1?'':'s'}.`: 'No saved maps yet. Open Map Designer to create one.'}</p>${maps.map(m=>`<div class="row" style="flex-wrap:wrap"><label><b>${escapeHtml(m.name)}</b><br><small>${m.planets.length} planets · ${Math.max(m.world?.w||1600,m.world?.h||1600)} × ${Math.max(m.world?.w||1600,m.world?.h||1600)}</small></label><button class="btn" data-play="${m.id}">Play</button><button class="btn" data-edit="${m.id}">Edit</button><button class="btn" data-delete="${m.id}">Delete</button></div>`).join('')}<button class="primary" id="mapsBack">Back</button>`;$('dialog').querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>setMode('custom',{mapId:b.dataset.play}));$('dialog').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>setMode('editor',{mapId:b.dataset.edit}));$('dialog').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('Delete this saved map?')){saveMaps(getMaps().filter(m=>m.id!==b.dataset.delete));showMapsMenu()}});$('mapsBack').onclick=showMenu}
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -290,7 +373,7 @@ $('testMap').onclick=()=>{mode='custom';fleets=[];paused=false;pendingVictory=nu
 addEventListener('wheel',e=>{zoom(e.deltaY<0?1.1:.9,e.clientX,e.clientY)},{passive:true});
 addEventListener('resize',resize);resize();initMenu();function loop(t){let dt=Math.min((t-last)/1000||0,.05);last=t;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
 try{const old=localStorage.getItem('gf_custom_map');if(old&&!getMaps().length){const oldPlanets=JSON.parse(old);if(Array.isArray(oldPlanets))saveMaps([{id:'legacy_map',name:'My Saved Map',planets:oldPlanets,updatedAt:Date.now()}]);}}catch{}
-if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=40',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=41',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
 // v24: ordered state application, payload validation, and smooth client-side entity interpolation.
 // Retains v22 cooperative commands and v21 diagnostics.
 function gfSerializeSnapshot(){
@@ -391,7 +474,7 @@ function gfStartMultiplayer(config){
 }
 function gfUpdateNetworkStatus(){const el=$('networkStatus');if(!el)return;if(mode!=='multiplayer'){el.className='netStatus';el.textContent='';return}el.className='netStatus show';if(multiplayerRole==='host'){el.textContent='● HOST · CLOUD ROOM · DIAGNOSTICS ↗';return}if(gfNetworkReconnecting){el.className='netStatus show warn';el.textContent='● RECONNECTING…';return}const age=gfNetworkLastReceived?performance.now()-gfNetworkLastReceived:Infinity;if(age<1400){el.className='netStatus show';el.textContent='● CONNECTED'+(gfNetworkRtt!=null?' · '+gfNetworkRtt+' ms':'')+' · DIAGNOSTICS ↗'}else if(age<4000){el.className='netStatus show warn';el.textContent='● CONNECTION DELAYED · DIAGNOSTICS ↗'}else{el.className='netStatus show bad';el.textContent='● WAITING FOR HOST · DIAGNOSTICS ↗'} }
 window.GravityFrontier={
- getVersion:()=> '40.0.0',
+ getVersion:()=> '41.0.0',
  returnToMenu:()=>{showMenu();return true},
  startTrainedAIMatch:profile=>{startTrainedAIMatch(profile);return true},
  getDiagnostics:()=>({role:multiplayerRole,seq:gfNetSeq,sentPackets:gfNetSentPackets,receivedPackets:gfNetReceivedPackets,sentBytes:gfNetSentBytes,receivedBytes:gfNetReceivedBytes,rtt:gfNetworkRtt,lastUpdateAge:gfNetworkLastReceived?performance.now()-gfNetworkLastReceived:null,simulatedLagMs:gfSimulatedLagMs}),
@@ -409,4 +492,4 @@ window.GravityFrontier={
 };
 if(!window.__gfV23NetworkTimers){window.__gfV23NetworkTimers=true;setInterval(()=>{window.GravityFrontier?.broadcastSnapshot?.()},200);setInterval(()=>{gfUpdateNetworkStatus();if(mode==='multiplayer'&&multiplayerRole==='client'&&window.GravityFrontierNative?.isAvailable?.()&&Date.now()-gfLastHeartbeat>2000){gfLastHeartbeat=Date.now();window.GravityFrontierNative.sendToRoom({type:'heartbeat',clientTime:gfLastHeartbeat}).catch(()=>{})}},500)}
 })();
-</script><script src="ai-training-lab.js?v=40"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
+</script><script src="ai-training-lab.js?v=41"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
