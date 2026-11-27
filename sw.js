@@ -1,4 +1,4 @@
-const CACHE='gravity-frontier-v52';
+const CACHE='gravity-frontier-v53';
 const ASSETS=['./','./index.html?v=52','./manifest.webmanifest','./icon-192.png','./icon-512.png','./multiplayer-bridge.js','./ai-training-lab.js'];
 
 self.addEventListener('install',event=>{
