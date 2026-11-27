@@ -1,5 +1,44 @@
-const CACHE='gravity-frontier-v38';
-const ASSETS=['./','./index.html?v=38','./manifest.webmanifest','./icon-192.png','./icon-512.png','./multiplayer-bridge.js','./ai-training-lab.js'];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('gravity-frontier-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;if(event.request.mode==='navigate'||url.pathname.endsWith('/index.html')){event.respondWith(fetch(new Request(event.request,{cache:'no-store'})).then(response=>{if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy))}return response}).catch(()=>caches.match('./index.html')));return}event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request))) });
+const CACHE='gravity-frontier-v39';
+const ASSETS=['./','./index.html?v=39','./manifest.webmanifest','./icon-192.png','./icon-512.png','./multiplayer-bridge.js','./ai-training-lab.js'];
+
+self.addEventListener('install',event=>{
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE);
+    await cache.addAll(ASSETS);
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith('gravity-frontier-')&&key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin)return;
+
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    const isPage=request.mode==='navigate'||url.pathname.endsWith('/index.html')||url.pathname.endsWith('/');
+    try{
+      const freshRequest=new Request(request,{cache:'no-store'});
+      const response=await fetch(freshRequest);
+      if(response&&response.ok){
+        const copy=response.clone();
+        const key=isPage?'./index.html':request;
+        await cache.put(key,copy);
+      }
+      return response;
+    }catch(error){
+      const cached=await cache.match(request)||await cache.match(isPage?'./index.html':'./');
+      if(cached)return cached;
+      throw error;
+    }
+  })());
+});
