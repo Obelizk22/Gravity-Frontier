@@ -290,7 +290,7 @@ $('testMap').onclick=()=>{mode='custom';fleets=[];paused=false;pendingVictory=nu
 addEventListener('wheel',e=>{zoom(e.deltaY<0?1.1:.9,e.clientX,e.clientY)},{passive:true});
 addEventListener('resize',resize);resize();initMenu();function loop(t){let dt=Math.min((t-last)/1000||0,.05);last=t;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
 try{const old=localStorage.getItem('gf_custom_map');if(old&&!getMaps().length){const oldPlanets=JSON.parse(old);if(Array.isArray(oldPlanets))saveMaps([{id:'legacy_map',name:'My Saved Map',planets:oldPlanets,updatedAt:Date.now()}]);}}catch{}
-if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=39',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=40',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
 // v24: ordered state application, payload validation, and smooth client-side entity interpolation.
 // Retains v22 cooperative commands and v21 diagnostics.
 function gfSerializeSnapshot(){
