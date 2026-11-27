@@ -98,6 +98,47 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 #wormholeRemoveBtn{left:calc(50% + 4px)!important;bottom:calc(env(safe-area-inset-bottom,0px) + 56px)!important;transform:none!important;min-height:34px;padding:7px 11px;border-color:rgba(255,139,164,.38);border-radius:999px;background:rgba(63,27,48,.96);box-shadow:0 8px 24px rgba(0,0,0,.32);font-size:10px}
 @media(max-width:520px){#wormholeRemoveBtn{left:calc(50% + 4px)!important;bottom:calc(env(safe-area-inset-bottom,0px) + 54px)!important;transform:none!important;min-height:32px;padding:6px 9px;font-size:9px}}
 @media(min-width:700px){#wormholeBuildBtn,#wormholeRemoveBtn{bottom:66px!important}}
+
+/* v48 · mobile hit-target and alignment correction */
+button,.btn,.menuCard,.primary{
+  -webkit-appearance:none;appearance:none;box-sizing:border-box;
+  display:inline-flex;align-items:center;justify-content:center;
+  line-height:1.2;vertical-align:middle;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;
+}
+button:active,.btn:active,.menuCard:active,.primary:active{
+  transform:none!important;
+}
+.fleetControls{
+  left:0!important;right:0!important;width:max-content;
+  max-width:calc(100% - 16px);margin-left:auto;margin-right:auto;
+  transform:none!important;box-sizing:border-box;
+  justify-content:center;isolation:isolate;
+}
+.fleetControls .btn{
+  position:relative;flex:0 0 auto;min-width:42px;min-height:40px;
+  padding:8px 9px;line-height:1.15;touch-action:manipulation;
+}
+#wormholeBuildBtn{
+  left:auto!important;right:calc(50% + 4px)!important;
+  transform:none!important;min-height:40px;line-height:1.15;
+  touch-action:manipulation;
+}
+#wormholeRemoveBtn{
+  left:calc(50% + 4px)!important;right:auto!important;
+  transform:none!important;min-height:40px;line-height:1.15;
+  touch-action:manipulation;
+}
+@media(max-width:520px){
+  .fleetControls{bottom:calc(env(safe-area-inset-bottom,0px) + 8px);gap:5px;padding:7px}
+  .fleetControls .btn{min-width:39px;min-height:40px;padding:8px 7px;font-size:10px}
+  #wormholeBuildBtn{right:calc(50% + 4px)!important;bottom:calc(env(safe-area-inset-bottom,0px) + 58px)!important;min-height:38px;padding:8px 10px}
+  #wormholeRemoveBtn{left:calc(50% + 4px)!important;bottom:calc(env(safe-area-inset-bottom,0px) + 58px)!important;min-height:38px;padding:8px 10px}
+}
+@media(min-width:700px){
+  .fleetControls{bottom:18px}
+  #wormholeBuildBtn,#wormholeRemoveBtn{bottom:66px!important}
+}
 </style></head><body>
 <canvas id="game"></canvas>
 <div class="hud">
@@ -296,7 +337,7 @@ function draw(){if(mode==='multiplayer'&&multiplayerRole==='client')gfAdvanceInt
  // editor label
 }
 function hit(p){for(let i=planets.length-1;i>=0;i--)if(Math.hypot(planets[i].x-p.x,planets[i].y-p.y)<planets[i].r+14/cam.z)return planets[i];return null}
-function showMenu(){$('overlay').style.display='flex';$('wormholeBuildBtn').style.display='none';setWormholeBuildMode(false);$('editorPanel').classList.remove('show');$('dialog').innerHTML=`<h1>GRAVITY<br>FRONTIER</h1><p>Build fleets, connect worlds through command networks, and conquer the system.</p><div class="menuGrid"><button class="menuCard" id="aiLab" style="grid-column:1/-1;border-color:#35bce9;background:linear-gradient(110deg,#12334c,#18284a)"><b>🧠 AI TRAINING LAB</b><span>Watch two bots learn and battle on six maps · adjustable speed</span></button><button class="menuCard" id="campaign"><b>Campaign</b><span>12 missions · two new enemy factions and rising difficulty</span></button><button class="menuCard" id="quick"><b>Ready-made maps</b><span>Choose map size and battle with 2–4 teams</span></button><button class="menuCard" id="editor"><b>Map designer</b><span>Create and manage saved maps</span></button><button class="menuCard" id="custom"><b>Custom maps</b><span>Choose from your saved maps</span></button><button class="menuCard" id="multiplayer"><b>Multiplayer</b><span>Play with friends over the internet</span></button></div><p style="font-size:11px">Campaign unlocked: ${getCampaignProgress()} of 12 missions. Saved maps stay on this device. <b>Build v47</b></p>`;bindMenu()}
+function showMenu(){$('overlay').style.display='flex';$('wormholeBuildBtn').style.display='none';setWormholeBuildMode(false);$('editorPanel').classList.remove('show');$('dialog').innerHTML=`<h1>GRAVITY<br>FRONTIER</h1><p>Build fleets, connect worlds through command networks, and conquer the system.</p><div class="menuGrid"><button class="menuCard" id="aiLab" style="grid-column:1/-1;border-color:#35bce9;background:linear-gradient(110deg,#12334c,#18284a)"><b>🧠 AI TRAINING LAB</b><span>Watch two bots learn and battle on six maps · adjustable speed</span></button><button class="menuCard" id="campaign"><b>Campaign</b><span>12 missions · two new enemy factions and rising difficulty</span></button><button class="menuCard" id="quick"><b>Ready-made maps</b><span>Choose map size and battle with 2–4 teams</span></button><button class="menuCard" id="editor"><b>Map designer</b><span>Create and manage saved maps</span></button><button class="menuCard" id="custom"><b>Custom maps</b><span>Choose from your saved maps</span></button><button class="menuCard" id="multiplayer"><b>Multiplayer</b><span>Play with friends over the internet</span></button></div><p style="font-size:11px">Campaign unlocked: ${getCampaignProgress()} of 12 missions. Saved maps stay on this device. <b>Build v48</b></p>`;bindMenu()}
 function showCampaignMenu(){const unlocked=getCampaignProgress(),names=['First Contact','Contested Orbit','Redline','Siege Front','Deep Pressure','The Last Stand','Second Front','Triple Threat','Purple Rising','Four-Way Siege','Fading Hope','Final Convergence'];$('dialog').innerHTML=`<h1>CAMPAIGN · 12 MISSIONS</h1><p>Complete each mission to unlock the next. Missions 7–8 introduce Green; Missions 9–12 add Purple and escalating multi-front battles.</p><div class="menuGrid">${Array.from({length:12},(_,i)=>`<button class="menuCard" data-mission="${i+1}" ${i+1>unlocked?'disabled':''}><b>Mission ${i+1} ${i+1>unlocked?'🔒':''}</b><span>${names[i]}</span></button>`).join('')}</div><button class="primary" id="menuBack">Back</button>`;$('dialog').querySelectorAll('[data-mission]').forEach(b=>b.onclick=()=>{campaignLevel=Number(b.dataset.mission);setMode('campaign',{level:campaignLevel})});$('menuBack').onclick=showMenu}
 function showMapsMenu(){const maps=getMaps();$('dialog').innerHTML=`<h1>SAVED MAPS</h1><p>${maps.length?`You have ${maps.length} saved map${maps.length===1?'':'s'}.`: 'No saved maps yet. Open Map Designer to create one.'}</p>${maps.map(m=>`<div class="row" style="flex-wrap:wrap"><label><b>${escapeHtml(m.name)}</b><br><small>${m.planets.length} planets · ${Math.max(m.world?.w||1600,m.world?.h||1600)} × ${Math.max(m.world?.w||1600,m.world?.h||1600)}</small></label><button class="btn" data-play="${m.id}">Play</button><button class="btn" data-edit="${m.id}">Edit</button><button class="btn" data-delete="${m.id}">Delete</button></div>`).join('')}<button class="primary" id="mapsBack">Back</button>`;$('dialog').querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>setMode('custom',{mapId:b.dataset.play}));$('dialog').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>setMode('editor',{mapId:b.dataset.edit}));$('dialog').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('Delete this saved map?')){saveMaps(getMaps().filter(m=>m.id!==b.dataset.delete));showMapsMenu()}});$('mapsBack').onclick=showMenu}
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -379,7 +420,7 @@ $('testMap').onclick=()=>{mode='custom';fleets=[];paused=false;pendingVictory=nu
 addEventListener('wheel',e=>{zoom(e.deltaY<0?1.1:.9,e.clientX,e.clientY)},{passive:true});
 addEventListener('resize',resize);resize();initMenu();function loop(t){let dt=Math.min((t-last)/1000||0,.05);last=t;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
 try{const old=localStorage.getItem('gf_custom_map');if(old&&!getMaps().length){const oldPlanets=JSON.parse(old);if(Array.isArray(oldPlanets))saveMaps([{id:'legacy_map',name:'My Saved Map',planets:oldPlanets,updatedAt:Date.now()}]);}}catch{}
-if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=47',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js?v=48',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});}
 // v24: ordered state application, payload validation, and smooth client-side entity interpolation.
 // Retains v22 cooperative commands and v21 diagnostics.
 function gfSerializeSnapshot(){
@@ -480,7 +521,7 @@ function gfStartMultiplayer(config){
 }
 function gfUpdateNetworkStatus(){const el=$('networkStatus');if(!el)return;if(mode!=='multiplayer'){el.className='netStatus';el.textContent='';return}el.className='netStatus show';if(multiplayerRole==='host'){el.textContent='● HOST · CLOUD ROOM · DIAGNOSTICS ↗';return}if(gfNetworkReconnecting){el.className='netStatus show warn';el.textContent='● RECONNECTING…';return}const age=gfNetworkLastReceived?performance.now()-gfNetworkLastReceived:Infinity;if(age<1400){el.className='netStatus show';el.textContent='● CONNECTED'+(gfNetworkRtt!=null?' · '+gfNetworkRtt+' ms':'')+' · DIAGNOSTICS ↗'}else if(age<4000){el.className='netStatus show warn';el.textContent='● CONNECTION DELAYED · DIAGNOSTICS ↗'}else{el.className='netStatus show bad';el.textContent='● WAITING FOR HOST · DIAGNOSTICS ↗'} }
 window.GravityFrontier={
- getVersion:()=> '47.0.0',
+ getVersion:()=> '48.0.0',
  returnToMenu:()=>{showMenu();return true},
  startTrainedAIMatch:profile=>{startTrainedAIMatch(profile);return true},
  getDiagnostics:()=>({role:multiplayerRole,seq:gfNetSeq,sentPackets:gfNetSentPackets,receivedPackets:gfNetReceivedPackets,sentBytes:gfNetSentBytes,receivedBytes:gfNetReceivedBytes,rtt:gfNetworkRtt,lastUpdateAge:gfNetworkLastReceived?performance.now()-gfNetworkLastReceived:null,simulatedLagMs:gfSimulatedLagMs}),
@@ -498,4 +539,4 @@ window.GravityFrontier={
 };
 if(!window.__gfV23NetworkTimers){window.__gfV23NetworkTimers=true;setInterval(()=>{window.GravityFrontier?.broadcastSnapshot?.()},200);setInterval(()=>{gfUpdateNetworkStatus();if(mode==='multiplayer'&&multiplayerRole==='client'&&window.GravityFrontierNative?.isAvailable?.()&&Date.now()-gfLastHeartbeat>2000){gfLastHeartbeat=Date.now();window.GravityFrontierNative.sendToRoom({type:'heartbeat',clientTime:gfLastHeartbeat}).catch(()=>{})}},500)}
 })();
-</script><script src="ai-training-lab.js?v=47"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
+</script><script src="ai-training-lab.js?v=48"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="multiplayer-bridge.js"></script></body></html>
