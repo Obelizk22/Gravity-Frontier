@@ -100,13 +100,13 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media(min-width:700px){#wormholeBuildBtn,#wormholeRemoveBtn{bottom:66px!important}}
 
 /* v48 · mobile hit-target and alignment correction */
-button,.btn,.menuCard,.primary{
+button,.btn,.primary{
   -webkit-appearance:none;appearance:none;box-sizing:border-box;
   display:inline-flex;align-items:center;justify-content:center;
   line-height:1.2;vertical-align:middle;touch-action:manipulation;
   -webkit-user-select:none;user-select:none;
 }
-button:active,.btn:active,.menuCard:active,.primary:active{
+button:active,.btn:active,.primary:active{
   transform:none!important;
 }
 .fleetControls{
@@ -139,6 +139,8 @@ button:active,.btn:active,.menuCard:active,.primary:active{
   .fleetControls{bottom:18px}
   #wormholeBuildBtn,#wormholeRemoveBtn{bottom:66px!important}
 }
+
+.menuCard{display:block;text-align:left;line-height:1.35}
 </style></head><body>
 <canvas id="game"></canvas>
 <div class="hud">
