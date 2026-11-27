@@ -1,5 +1,5 @@
 const CACHE='gravity-frontier-v52';
-const ASSETS=['./','./index.html?v=51','./manifest.webmanifest','./icon-192.png','./icon-512.png','./multiplayer-bridge.js','./ai-training-lab.js'];
+const ASSETS=['./','./index.html?v=52','./manifest.webmanifest','./icon-192.png','./icon-512.png','./multiplayer-bridge.js','./ai-training-lab.js'];
 
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
