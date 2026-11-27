@@ -146,15 +146,18 @@ function exitMultiplayer(){const role=multiplayerRole;multiplayerRole=null;mode=
 function startVictoryCelebration(message=''){
  const team=mode==='multiplayer'?localHumanTeam:'blue',started=performance.now(),bursts=[];
  const owned=planets.filter(p=>p.owner===team);
- owned.forEach((p,pi)=>{for(let b=0;b<4;b++){const delay=b*720+((pi*137)%260);for(let k=0;k<13;k++){const angle=(Math.PI*2*k/13)+(pi*.61)+(b*.23)+(Math.random()-.5)*.22,speed=32+Math.random()*66;bursts.push({x:p.x+Math.cos(angle)*p.r*.25,y:p.y+Math.sin(angle)*p.r*.25,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-18,delay,life:850+Math.random()*500,size:1.3+Math.random()*1.7,color:['#ffdf70','#ff78a8','#7be8ff','#a9ff9c','#d5a1ff','#ffffff'][Math.floor(Math.random()*6)]})}}});
- victoryCelebration={team,started,bursts,message};paused=true;
+ owned.forEach((p,pi)=>{for(let wave=0;wave<4;wave++){const delay=wave*760+((pi*137)%240),count=22;for(let k=0;k<count;k++){const angle=(Math.PI*2*k/count)+(pi*.61)+(wave*.23)+(Math.random()-.5)*.16,speed=72+Math.random()*112;bursts.push({x:p.x+Math.cos(angle)*p.r*.2,y:p.y+Math.sin(angle)*p.r*.2,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-24,delay,life:1050+Math.random()*450,size:3.2+Math.random()*2.8,color:['#ffdf70','#ff5794','#55eaff','#8cff70','#c18aff','#ffffff'][Math.floor(Math.random()*6)]})}}});
+ victoryCelebration={team,started,bursts,message};
+ paused=true;
 }
 function renderVictoryCelebration(){
  if(!victoryCelebration)return;
  const elapsed=performance.now()-victoryCelebration.started;
- victoryCelebration.bursts.forEach(b=>{const age=elapsed-b.delay;if(age<0||age>b.life)return;const t=age/1000,fade=Math.max(0,1-age/b.life);const x=b.x+b.vx*t,y=b.y+b.vy*t+34*t*t;ctx.globalAlpha=fade;ctx.fillStyle=b.color;ctx.shadowColor=b.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(x,y,b.size*(.65+fade*.45),0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;});
- ctx.globalAlpha=1;
- if(elapsed>=3650){const msg=victoryCelebration.message;victoryCelebration=null;showEndGame(true,msg);}
+ ctx.save();
+ victoryCelebration.bursts.forEach(b=>{const age=elapsed-b.delay;if(age<0||age>b.life)return;const t=age/1000,fade=Math.max(0,1-age/b.life),x=b.x+b.vx*t,y=b.y+b.vy*t+38*t*t,tailX=x-b.vx*.045,tailY=y-(b.vy+76*t)*.045;
+ ctx.globalAlpha=fade;ctx.strokeStyle=b.color;ctx.lineWidth=2.4/cam.z;ctx.shadowColor=b.color;ctx.shadowBlur=15;ctx.beginPath();ctx.moveTo(tailX,tailY);ctx.lineTo(x,y);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,(b.size+1.5)/cam.z,0,Math.PI*2);ctx.fill();});
+ ctx.restore();
+ if(elapsed>=3900){const msg=victoryCelebration.message;victoryCelebration=null;showEndGame(true,msg);}
 }
 function endGame(win,message=''){
  if(win&&!victoryCelebration&&!gameResult){startVictoryCelebration(message);return;}
