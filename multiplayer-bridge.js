@@ -3,6 +3,9 @@
    remains authoritative for simulation; no service-role key is ever used here. */
 (()=>{
   const STORE='gf_cloud_config_v1';
+  // Public client configuration for the shared Gravity Frontier multiplayer project.
+  const SHARED_PROJECT_URL='https://jjsmbeomzqkiqsqcioco.supabase.co';
+  const SHARED_PUBLISHABLE_KEY='sb_publishable_X4PdtzQPxPJuJoNx8F13iw_oFPLTBtt';
   let client=null,channel=null,role=null,roomCode=null,playerId=null,displayName='Player';
   let hostPresenceIds=new Set(),lastPresenceIds=new Set(),sendQueue=Promise.resolve(),lastSendAt=0;
   const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -27,6 +30,7 @@
   api.isConfigured=api.isAvailable;
   api.getConfig=()=>{const c=readConfig();return {url:c.url||'',key:c.key||''}};
   api.configure=configure;
+  api.configureShared=()=>configure(SHARED_PROJECT_URL,SHARED_PUBLISHABLE_KEY);
   api.startHosting=startHosting;
   api.stopHosting=stopHosting;
   api.kickPlayer=async id=>{if(role!=='host')throw new Error('Only the host can remove players.');await send({type:'playerKicked',targetPlayerId:String(id),reason:'The host removed you from the lobby.'});return true};
